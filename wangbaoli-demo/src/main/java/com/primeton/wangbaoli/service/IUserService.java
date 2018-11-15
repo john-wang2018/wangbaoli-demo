@@ -4,14 +4,13 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.github.pagehelper.PageInfo;
 import com.primeton.wangbaoli.entity.User;
-
+import com.primeton.wangbaoli.exception.service.DemoException;
+/**
+ * 用户服务接口
+ * @author root
+ *
+ */
 public interface IUserService {
 	/**
 	 * 增加用户信息
@@ -19,7 +18,7 @@ public interface IUserService {
 	 * @param user 用户信息
 	 * @return 用户信息
 	 */
-	public User createUser(User user);
+	public User createUser(User user) throws DemoException;
 
 	/**
 	 * 根据用户id的到用户
@@ -27,21 +26,21 @@ public interface IUserService {
 	 * @param id 用户id
 	 * @return user 用户信息
 	 */
-	public User get(Integer id);
+	public User getUser(Integer id) throws DemoException;
 
 	/**
 	 * 得到全部的用户
 	 * 
 	 * @return 包含全部用户的集合
 	 */
-	public List<User> queryUsers(Integer page,Integer size);
+	public List<User> queryUsers(Integer page,Integer size)  throws DemoException;
 
 	/**
 	 * 通过员工id删除员工
 	 * 
 	 * @param id 员工id
 	 */
-	public void removeUser(Integer id);
+	public void removeUser(Integer id)  throws DemoException;
 
 	/**
 	 * 通过得到的实体类信息修改员工
@@ -49,22 +48,15 @@ public interface IUserService {
 	 * @param user 实体类信息
 	 * @return 
 	 */
-	public User modify(User user,HttpSession sessions);
+	public User modifyUser(User user,HttpSession sessions,Integer id)  throws DemoException;
 	/**
 	 * 用户登录
 	 * @param username 用户名
 	 * @param password 用户密码
 	 * @return  用户信息
 	 */
-	public User login(String username, String password);
-	/**
-	 * 通过用户名得到用户信息
-	 * @param username 用户名
-	 * @param page 访问第几页
-	 * @param size 每一页的信息条数
-	 * @return 用户信息列表
-	 */
-	public List<User> getByUsername(String username, Integer page, Integer size);
+	public User login(String username, String password)  throws DemoException;
+	
 	/**
 	 * 修改用户密码
 	 * @param newPassword 新用户密码
@@ -72,12 +64,19 @@ public interface IUserService {
 	 * @param id 用户id
 	 * @return 用户的信息
 	 */
-	public User modifyPassword(String newPassword,String oldPassword,Integer id);
+	public User modifyPassword(String newPassword,String oldPassword,Integer id)  throws DemoException;
 	/**
 	 * 将同一个部门的员工的orgid设为nul
 	 * @param orgid  员工的部门id
 	 * @return 员工的信息列表
 	 */
-	public List<User> modifyOrgIdIsNull(Integer orgid);
-
+	public List<User> modifyOrgIdIsNull(Integer orgid)  throws DemoException;
+	/**
+	 * 通过用户名得到用户信息
+	 * @param username 用户名
+	 * @param page 访问第几页
+	 * @param size 每一页的信息条数
+	 * @return 用户信息列表
+	 */
+	List<User> queryByLikename(String username,Integer page,Integer size)  throws DemoException;
 }

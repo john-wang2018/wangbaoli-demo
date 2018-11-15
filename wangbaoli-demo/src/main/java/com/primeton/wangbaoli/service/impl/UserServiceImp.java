@@ -5,27 +5,26 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.http.HttpSession;
-import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.primeton.wangbaoli.dao.OrgMapper;
 import com.primeton.wangbaoli.dao.UserMapper;
-import com.primeton.wangbaoli.entity.Org;
 import com.primeton.wangbaoli.entity.User;
+import com.primeton.wangbaoli.exception.service.DemoException;
 import com.primeton.wangbaoli.service.IUserService;
 import com.primeton.wangbaoli.util.ServiceValidator;
-
+import org.springframework.transaction.annotation.Transactional;
+/**
+ * 用户服务层实现类，实现用户的增删改查。
+ * @author root
+ *
+ */
 @Service
+@Transactional
 public class UserServiceImp implements IUserService {
 	@Autowired
 	UserMapper userm;
@@ -35,21 +34,21 @@ public class UserServiceImp implements IUserService {
 	public UserServiceImp() {
 	}
 
-	public User get(Integer id) {
-		ServiceValidator.checkIdEextis(userm.get(id)==null);
-		User user=userm.get(id);
+	public User getUser(Integer id)  throws DemoException{
+		ServiceValidator.checkIdEextis(userm.getUser(id)==null);
+		User user=userm.getUser(id);
 		user.setPassword(null);
 		return user;
 	}
 
 	@Override
-	public User createUser(User user) {
+	public User createUser(User user)  throws DemoException{
 		String username = user.getUsername();
 		String password = user.getPassword();
 		ServiceValidator.checkInfoIsNull(username, password);
 		ServiceValidator.checkUsername(username);
 		ServiceValidator.checkPassword(password);
-		ServiceValidator.checkUserRepeat(!(userm.getByUsername(username)==null));
+		ServiceValidator.checkUserRepeat(!(userm.getByName(username)==null));
 		String uuid = UUID.randomUUID().toString();
 		String md5Password = getMd5Password(password, uuid);
 		user.setPassword(md5Password);
@@ -59,48 +58,52 @@ public class UserServiceImp implements IUserService {
 		user.setCreateTime(now);
 		user.setModifUser(user.getUsername());
 		user.setModifTime(now);
-		userm.insert(user);
+		userm.insertUser(user);
 		return user;
 	}
 
 	@Override
 	@Transactional
-	public void removeUser(Integer id){
-		ServiceValidator.checkIdEextis(userm.get(id)==null);
-		userm.delete(id);
-		ServiceValidator.checkIdEextisff(userm.get(id)!=null);
+	public void removeUser(Integer id)  throws DemoException{
+		ServiceValidator.checkIdEextis(userm.getUser(id)==null);
+		userm.deleteUser(id);
+		ServiceValidator.checkIdEextisff(userm.getUser(id)!=null);
 	}
 
 	@Override
-	public User modify(User user,HttpSession session) {
-		Integer id=(Integer)session.getAttribute("id");
+	public User modifyUser(User user,HttpSession session,Integer id)  throws DemoException{
 		ServiceValidator.checkInfoIsNull(id);
 		String username=user.getUsername();
-		User data=userm.get(id);
+		User data=userm.getUser(id);
 		user.setId(id);
-		if(userm.getByUsername(username)==null) {
-			userm.update(user);
+		if(userm.getByName(username)==null) {
+			userm.updateUser(user);
 		}else {
 			if(data.getId().equals(id)) {
 				user.setUsername(null);
 				
-				userm.update(user);
+				userm.updateUser(user);
 			}
 			else {
 				ServiceValidator.checkUserRepeat(true);
 			}
 		}
-		data=userm.get(id);
+		data=userm.getUser(id);
 		return data;
 	}
 
 	@Override
-	public List<User> queryUsers(Integer page,Integer size) {
+	public List<User> queryUsers(Integer page,Integer size)  throws DemoException{
 		PageHelper.startPage(page, page);
-		List<User> users = (List<User>) userm.query();
+		List<User> users = (List<User>) userm.queryUsers();
 		return users;
 	}
-
+	/**
+	 * 生成加密后的密码
+	 * @param password 密码
+	 * @param salt 盐值
+	 * @return 加密后的密码
+	 */
 	public String getMd5Password(String password, String salt) {
 		password = DigestUtils.md5DigestAsHex(password.getBytes());
 		salt = DigestUtils.md5DigestAsHex(salt.getBytes()
@@ -109,8 +112,9 @@ public class UserServiceImp implements IUserService {
 	}
 
 	@Override
-	public User login(String username, String password) {
-		User data=userm.getByUsername(username);
+	public User login(String username, String password)  throws DemoException{
+		ServiceValidator.checkInfoIsNull(username,password);
+		User data=userm.getByName(username);
 		ServiceValidator.checkUsernameNotFound(data==null);
 		User user = data;
 		String salt=user.getUuid();
@@ -121,15 +125,15 @@ public class UserServiceImp implements IUserService {
 	}
 
 	
-
-	public List<User> getByUsername(String username,Integer page,Integer size) {
+	@Override
+	public List<User> queryByLikename(String username,Integer page,Integer size)  throws DemoException{
 		PageHelper.startPage(page, size);
-		 return userm.queryLike("%"+username+"%");
+		 return userm.queryLikeName("%"+username+"%");
 	}
 
 	@Override
-	public User modifyPassword(String newPassword, String oldPassword, Integer id) {
-		User data= userm.get(id);
+	public User modifyPassword(String newPassword, String oldPassword, Integer id)  throws DemoException{
+		User data= userm.getUser(id);
 		ServiceValidator.checkInfoIsNull(newPassword,oldPassword,id);
 		ServiceValidator.checkPassword(newPassword);
 		String salt=data.getUuid();
@@ -144,10 +148,10 @@ public class UserServiceImp implements IUserService {
 	}
 
 	@Override
-	public List<User> modifyOrgIdIsNull(Integer orgid) {
+	public List<User> modifyOrgIdIsNull(Integer orgid)  throws DemoException{
 		ServiceValidator.checkInfoIsNull(orgid);
-		List<User> data=userm.queryList(orgid);
-		userm.updateByorgidIsNull(orgid);
+		List<User> data=userm.queryByOrgid(orgid);
+		userm.updateOrgidNull(orgid);
 		for(User u:data) {
 			u.setOrgid(null);
 		}

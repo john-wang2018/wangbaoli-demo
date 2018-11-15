@@ -1,9 +1,7 @@
 package com.primeton.wangbaoli.controller;
 
 import java.util.List;
-
 import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,16 +11,18 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.primeton.wangbaoli.annotate.LogAop;
+import com.primeton.wangbaoli.config.LogAop;
 import com.primeton.wangbaoli.entity.Org;
-import com.primeton.wangbaoli.entity.RequestResult;
+import com.primeton.wangbaoli.entity.ResponseResult;
 import com.primeton.wangbaoli.service.IOrgService;
-
 import io.swagger.annotations.ApiOperation;
-
+/**
+ * 组织机构控制层，实现增删改查功能
+ * @author root
+ *
+ */
 @RestController
-@RequestMapping("/api/org")
+@RequestMapping("/api/orgs")
 public class OrgController {
 	@Autowired
 	private IOrgService orgS;
@@ -38,9 +38,9 @@ public class OrgController {
 	@LogAop(name="/aop/aop.action")
 	@ApiOperation("创建组织机构")
 	@PostMapping("/create")
-	public RequestResult<Org> create(Org org,HttpSession session) {
-		orgS.create(org, session);
-		return new RequestResult<Org>( RequestResult.OK,org);
+	public ResponseResult<Org> createOrg(Org org,HttpSession session) {
+		orgS.createOrg(org, session);
+		return new ResponseResult<Org>( ResponseResult.OK,org);
 		
 	}
 	/**
@@ -51,9 +51,9 @@ public class OrgController {
 	@LogAop(name="/aop/aop.action")
 	@ApiOperation("根据组织机构id删除对应的组织机构")
 	@DeleteMapping("/remove/{id}")
-	public RequestResult<Void> remove(@PathVariable("id")Integer id) {
-		orgS.remove(id);
-		return new RequestResult<Void>(RequestResult.OK);
+	public ResponseResult<Void> removeOrg(@PathVariable("id")Integer id) {
+		orgS.removeOrg(id);
+		return new ResponseResult<Void>(ResponseResult.OK);
 	}
 	/**
 	 * 根据组织机构id修改组织机构信息
@@ -63,10 +63,10 @@ public class OrgController {
 	 */
 	@LogAop(name="/aop/aop.action")
 	@ApiOperation("修改组织机构信息")
-	@PutMapping("/put")
-	public RequestResult<Org> modify(Org org,HttpSession session) {
-		Org data = orgS.modify(org,session );
-		return new RequestResult<Org>(RequestResult.OK, data);
+	@PutMapping("/put/{id}")
+	public ResponseResult<Org> modifyOrg(Org org,HttpSession session,@PathVariable("id")Integer id) {
+		Org data = orgS.modifyOrg(org,session,id );
+		return new ResponseResult<Org>(ResponseResult.OK, data);
 	}
 	/**
 	 * 根据组织机构id查找组织机构信息
@@ -76,9 +76,9 @@ public class OrgController {
 	@LogAop(name="/aop/aop.action")
 	@ApiOperation("根据组织机构id查找组织机构信息")
 	@GetMapping("/get/{id}")
-	public RequestResult<Org> get(@PathVariable("id")Integer id){
-		Org data=orgS.get(id);
-		return new RequestResult<Org>(RequestResult.OK,data);
+	public ResponseResult<Org> getOrg(@PathVariable("id")Integer id){
+		Org data=orgS.getOrg(id);
+		return new ResponseResult<Org>(ResponseResult.OK,data);
 		
 	}
 	/**
@@ -91,7 +91,7 @@ public class OrgController {
 	@LogAop(name="/aop/aop.action")
 	@ApiOperation("根据组织机构名称迷糊查找组织机构信息")
 	@GetMapping("/query/name")
-	public List<Org> queryByName(String orgname,@RequestParam(value="page",defaultValue="0")Integer page,@RequestParam(value="size",defaultValue="0")Integer size){
+	public List<Org> queryByLikeName(String orgname,@RequestParam(value="page",defaultValue="0")Integer page,@RequestParam(value="size",defaultValue="0")Integer size){
 		return orgS.queryByLike(orgname, page, size);
 	}
 	/**
@@ -103,8 +103,8 @@ public class OrgController {
 	@LogAop(name="/aop/aop.action")
 	@ApiOperation("显示所有的组织机构信息")
 	@GetMapping("/query")
-	public List<Org> query(@RequestParam(value="page",defaultValue="0")Integer page,@RequestParam(value="size",defaultValue="0")Integer size){
-		return orgS.query(page, size);
+	public List<Org> queryOrgs(@RequestParam(value="page",defaultValue="0")Integer page,@RequestParam(value="size",defaultValue="0")Integer size){
+		return orgS.queryOrgs(page, size);
 	}
 	
 

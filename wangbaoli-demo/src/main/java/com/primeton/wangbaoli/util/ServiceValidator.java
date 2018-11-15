@@ -1,12 +1,7 @@
 package com.primeton.wangbaoli.util;
 
-import com.primeton.wangbaoli.exception.service.DeleteException;
-import com.primeton.wangbaoli.exception.service.IdNotFoundException;
-import com.primeton.wangbaoli.exception.service.NullRequestException;
-import com.primeton.wangbaoli.exception.service.OrgRepeatException;
-import com.primeton.wangbaoli.exception.service.PasswordErrException;
-import com.primeton.wangbaoli.exception.service.UserNotFoundException;
-import com.primeton.wangbaoli.exception.service.UsernameRepeatException;
+import com.primeton.wangbaoli.exception.enums.ErrorEnum;
+import com.primeton.wangbaoli.exception.service.DemoException;
 
 /**
  * 对前端数据进行通用验证
@@ -14,7 +9,7 @@ import com.primeton.wangbaoli.exception.service.UsernameRepeatException;
  * @author root
  *
  */
-public class ServiceValidator implements Validator{
+public class ServiceValidator{
 	
 	/**
 	 * 验证用户名是否符合规范
@@ -53,12 +48,12 @@ public class ServiceValidator implements Validator{
 	 * @param infos传入的信息
 	 * @return 信息为null返回true，不为null返回false
 	 */
-	public static void checkInfoIsNull(Object...infos) throws NullRequestException{
+	public static void checkInfoIsNull(Object...infos) throws DemoException{
 		if(infos==null)
-			throw new NullRequestException("必填内容不能为空！");
+			throw new DemoException(ErrorEnum.ERROR_CONTENT_CANNOT_EMPTY);
 		for(Object info:infos) {
 			if(info==null)
-				throw new NullRequestException("必填内容不能为空！");
+				throw new DemoException(ErrorEnum.ERROR_CONTENT_CANNOT_EMPTY);
 			
 		}
 		
@@ -66,51 +61,61 @@ public class ServiceValidator implements Validator{
 	/**
 	 * 用户如果不存在抛出用户不存在异常。
 	 * @param result 用户是否存在。
-	 * @throws UserNotFoundException 用户不存在异常
+	 * @throws DemoException 用户不存在异常
 	 */
-	public static void checkUsernameNotFound(boolean result) throws UserNotFoundException{
+	public static void checkUsernameNotFound(boolean result) throws DemoException{
 		if(result) {
-			throw new UserNotFoundException("用户名不存在");
+			throw new DemoException(ErrorEnum.ERROR_USER);
 		}
 	}
 	/**
 	 * 判断删除结果 
 	 * @param result 删除结果
-	 * @throws DeleteException 删除失败异常
+	 * @throws DemoException 删除失败异常
 	 */
-	public static void checkDelete(boolean result) throws DeleteException{
+	public static void checkDelete(boolean result) throws DemoException{
 		if(result) {
-			throw new DeleteException("删除失败");
+			throw new DemoException(ErrorEnum.ERROR_DELETE);
 		}
 	}
 	/**
 	 * 判断组织机构是否重复
 	 * @param result 判断结果
-	 * @throws OrgRepeatException 组织机构已经存在异常
+	 * @throws DemoException 组织机构已经存在异常
 	 */
-	public static void checkUserRepeat(boolean result) throws UsernameRepeatException{
+	public static void checkUserRepeat(boolean result) throws DemoException{
 		if(result) {
-			throw new UsernameRepeatException("用户名已存在");
+			throw new DemoException(ErrorEnum.ERROR_USER_INUSE);
 		}
 	}
 	/**
 	 * 判断密码是否有误
 	 * @param result 判断结果
-	 * @throws PasswordErrException 密码输入错误异常
+	 * @throws DemoErrException 密码输入错误异常
 	 */
-	public static void checkPasswordErr(boolean result) throws PasswordErrException{
+	public static void checkPasswordErr(boolean result) throws DemoException{
 		if(result) {
-			throw new PasswordErrException("密码输入错误");
+			throw new DemoException(ErrorEnum.ERROR_USER_PASSWPRD);
 		}
 	}
-	public static void checkIdEextis(boolean result) throws IdNotFoundException{
+	/**
+	 * 判断id是否存在
+	 * @param result 判断结果
+	 * @throws DemoException 选中的用户不存在
+	 */
+	public static void checkIdEextis(boolean result) throws DemoException{
 		if(result) {
-			throw new IdNotFoundException("选中的用户不存在");
+			throw new DemoException(ErrorEnum.ERROR_USER);
 		}
 	}
-	public static void checkIdEextisff(boolean result) throws IdNotFoundException{
+	/**
+	 * 判断是否删除失败
+	 * @param result 判断结果
+	 * @throws DemoException 删除失败
+	 */
+	public static void checkIdEextisff(boolean result) throws DemoException{
 		if(result) {
-			throw new IdNotFoundException("删除失败");
+			throw new DemoException(ErrorEnum.ERROR_DELETE);
 		}
 	}
 }
