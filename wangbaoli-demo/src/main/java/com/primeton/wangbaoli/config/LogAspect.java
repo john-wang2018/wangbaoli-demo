@@ -37,10 +37,9 @@ public class LogAspect {
         //获取RequestAttributes  
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         HttpSession session = (HttpSession) requestAttributes.resolveReference(RequestAttributes.REFERENCE_SESSION);
-        System.err.println("id" +session.getAttribute("id"));
-        if(null == session.getAttribute("id")) {
-        	throw new DemoException(ErrorEnum.NOT_LOGIN);
-        }
+//        if(null == session.getAttribute("id")) {
+//        	throw new DemoException(ErrorEnum.NOT_LOGIN);
+//        }
     }
 
     @After("@annotation(log)")

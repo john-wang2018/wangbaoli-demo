@@ -48,14 +48,14 @@ public interface IUserService {
 	 * @param user 实体类信息
 	 * @return 
 	 */
-	public User modifyUser(User user,HttpSession sessions,Integer id)  throws DemoException;
+	public User modifyUser(User user,HttpSession sessions)  throws DemoException;
 	/**
 	 * 用户登录
 	 * @param username 用户名
 	 * @param password 用户密码
 	 * @return  用户信息
 	 */
-	public User login(String username, String password)  throws DemoException;
+	public User login(User user)  throws DemoException;
 	
 	/**
 	 * 修改用户密码
@@ -64,19 +64,20 @@ public interface IUserService {
 	 * @param id 用户id
 	 * @return 用户的信息
 	 */
-	public User modifyPassword(String newPassword,String oldPassword,Integer id)  throws DemoException;
+	public User modifyPassword(String newPassword,String oldPassword,Integer id,HttpSession session)  throws DemoException;
+	
 	/**
-	 * 将同一个部门的员工的orgid设为nul
-	 * @param orgid  员工的部门id
-	 * @return 员工的信息列表
-	 */
-	public List<User> modifyOrgIdIsNull(Integer orgid)  throws DemoException;
-	/**
-	 * 通过用户名得到用户信息
+	 * 通过用户名通过模糊查询得到用户信息
 	 * @param username 用户名
 	 * @param page 访问第几页
 	 * @param size 每一页的信息条数
 	 * @return 用户信息列表
 	 */
 	List<User> queryByLikename(String username,Integer page,Integer size)  throws DemoException;
+	/**
+	 * 通过用户名查询用户信息
+	 * @param username 用户名
+	 * @return  用户对象
+	 */
+	public User getUserByUserName(String username);
 }

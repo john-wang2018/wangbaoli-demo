@@ -29,7 +29,6 @@ import com.primeton.wangbaoli.util.ServiceValidator;
 public class OrgServiceImp implements IOrgService {
 	@Autowired
 	private OrgMapper orgm;
-	private IUserService userS;
 
 	public OrgServiceImp() {
 
@@ -38,8 +37,8 @@ public class OrgServiceImp implements IOrgService {
 	@Override
 	public Org createOrg(Org org, HttpSession session) {
 		String orgname = org.getOrgname();
-		Integer preorgid = org.getPreorgid();
-		ServiceValidator.checkInfoIsNull(org, preorgid);
+		Integer preorgcode = org.getPreorgcode();
+		ServiceValidator.checkInfoIsNull(org, preorgcode);
 		ServiceValidator.checkUserRepeat(!(orgm.getByName(orgname) == null));
 		Date now = new Date();
 		String createUser = (String) session.getAttribute("username");
@@ -55,28 +54,29 @@ public class OrgServiceImp implements IOrgService {
 	public void removeOrg(Integer id) {
 		ServiceValidator.checkIdEextis(orgm.getOrg(id) == null);
 		orgm.deleteOrg(id);
-		userS.modifyOrgIdIsNull(id);
+		
 
 		ServiceValidator.checkIdEextisff(orgm.getOrg(id) != null);
 	}
 
 	@Override
-	public Org modifyOrg(Org org, HttpSession session, Integer id) {
+	public Org modifyOrg(Org org, HttpSession session) {
+		Integer  id=org.getId();
 		ServiceValidator.checkInfoIsNull(id);
 		String orgname = org.getOrgname();
-		Org data = orgm.getOrg(id);
+		Org orginfo = orgm.getOrg(id);
 		if (orgm.getByName(orgname) == null) {
 			orgm.updateOrg(org);
 		} else {
-			if (data.getId().equals(id)) {
+			if (orginfo.getId().equals(id)) {
 				org.setOrgname(null);
 				orgm.updateOrg(org);
 			} else {
 				ServiceValidator.checkUserRepeat(true);
 			}
 		}
-		data = orgm.getOrg(id);
-		return data;
+		orginfo = orgm.getOrg(id);
+		return orginfo;
 	}
 
 	@Override

@@ -7,12 +7,15 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
 /**
  * springboot启动类
  * 
  * @author root
  *
  */
+@EnableSwagger2
 @SpringBootApplication
 @Configuration
 @ComponentScan(basePackages = ("com.primeton.wangbaoli"))

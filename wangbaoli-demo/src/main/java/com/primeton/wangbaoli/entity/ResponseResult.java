@@ -62,6 +62,10 @@ public class ResponseResult<T> {
 		setData(data);
 	}
 
+	public ResponseResult(String message) {
+		setMessage(message);
+	}
+
 	@Override
 	public String toString() {
 		return "RequestResult [state=" + state + ", data=" + data + ", message=" + message + "]";

@@ -13,17 +13,8 @@ public class Org {
 
 	private Integer id;
 	private String orgname;
-	private Integer preorgid;
-	private String createuser;
-	private Date createdate;
-	private String modifuser;
-	private Date modifdate;
-	private List<User> users;
-
-	public Org() {
-		super();
-	}
-
+	private Integer preorgcode;
+	private Integer orgcode;
 	public Integer getId() {
 		return id;
 	}
@@ -40,12 +31,20 @@ public class Org {
 		this.orgname = orgname;
 	}
 
-	public Integer getPreorgid() {
-		return preorgid;
+	public Integer getPreorgcode() {
+		return preorgcode;
 	}
 
-	public void setPreorgid(Integer preorgid) {
-		this.preorgid = preorgid;
+	public void setPreorgcode(Integer preorgcode) {
+		this.preorgcode = preorgcode;
+	}
+
+	public Integer getOrgcode() {
+		return orgcode;
+	}
+
+	public void setOrgcode(Integer orgcode) {
+		this.orgcode = orgcode;
 	}
 
 	public String getCreateuser() {
@@ -88,4 +87,15 @@ public class Org {
 		this.users = users;
 	}
 
+	private String createuser;
+	private Date createdate;
+	private String modifuser;
+	private Date modifdate;
+	private List<User> users;
+
+	public Org() {
+		super();
+	}
+
+	
 }

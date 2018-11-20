@@ -8,8 +8,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.primeton.wangbaoli.config.LogAop;
 import com.primeton.wangbaoli.entity.Org;
@@ -37,8 +39,8 @@ public class OrgController {
 	 */
 	@LogAop(name="/aop/aop.action")
 	@ApiOperation("创建组织机构")
-	@PostMapping("/create")
-	public ResponseResult<Org> createOrg(Org org,HttpSession session) {
+	@PostMapping("/")
+	public ResponseResult<Org> createOrg(@RequestBody Org org,HttpSession session) {
 		orgS.createOrg(org, session);
 		return new ResponseResult<Org>( ResponseResult.OK,org);
 		
@@ -50,7 +52,7 @@ public class OrgController {
 	 */
 	@LogAop(name="/aop/aop.action")
 	@ApiOperation("根据组织机构id删除对应的组织机构")
-	@DeleteMapping("/remove/{id}")
+	@DeleteMapping("/{id}")
 	public ResponseResult<Void> removeOrg(@PathVariable("id")Integer id) {
 		orgS.removeOrg(id);
 		return new ResponseResult<Void>(ResponseResult.OK);
@@ -63,10 +65,10 @@ public class OrgController {
 	 */
 	@LogAop(name="/aop/aop.action")
 	@ApiOperation("修改组织机构信息")
-	@PutMapping("/put/{id}")
-	public ResponseResult<Org> modifyOrg(Org org,HttpSession session,@PathVariable("id")Integer id) {
-		Org data = orgS.modifyOrg(org,session,id );
-		return new ResponseResult<Org>(ResponseResult.OK, data);
+	@PutMapping("/{id}")
+	public ResponseResult<Org> modifyOrg(@RequestBody Org org,HttpSession session) {
+		Org orginfo = orgS.modifyOrg(org,session);
+		return new ResponseResult<Org>(ResponseResult.OK, orginfo);
 	}
 	/**
 	 * 根据组织机构id查找组织机构信息
@@ -75,7 +77,7 @@ public class OrgController {
 	 */
 	@LogAop(name="/aop/aop.action")
 	@ApiOperation("根据组织机构id查找组织机构信息")
-	@GetMapping("/get/{id}")
+	@GetMapping("/{id}")
 	public ResponseResult<Org> getOrg(@PathVariable("id")Integer id){
 		Org data=orgS.getOrg(id);
 		return new ResponseResult<Org>(ResponseResult.OK,data);
@@ -102,7 +104,7 @@ public class OrgController {
 	 */
 	@LogAop(name="/aop/aop.action")
 	@ApiOperation("显示所有的组织机构信息")
-	@GetMapping("/query")
+	@GetMapping("/")
 	public List<Org> queryOrgs(@RequestParam(value="page",defaultValue="0")Integer page,@RequestParam(value="size",defaultValue="0")Integer size){
 		return orgS.queryOrgs(page, size);
 	}

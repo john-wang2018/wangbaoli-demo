@@ -8,8 +8,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import com.primeton.wangbaoli.config.LogAop;
 import com.primeton.wangbaoli.entity.ResponseResult;
@@ -41,9 +43,9 @@ public class UserController {
 	 */
 	@ApiOperation("通过用户id查找用户信息")
 	@LogAop(name = "/aop/aop.action")
-	@GetMapping("/get/{id}")
-	public User get(@PathVariable("id") Integer id) {
-		return userS.getUser(id);
+	@GetMapping("/{id}")
+	public ResponseResult<User> getUser(@PathVariable("id") Integer id) {
+		return new ResponseResult<User>(ResponseResult.OK, userS.getUser(id));
 	}
 
 	/**
@@ -53,8 +55,8 @@ public class UserController {
 	 */
 	@ApiOperation("查询所有用户数据")
 	@LogAop(name = "/aop/aop.action")
-	@GetMapping("/query")
-	public ResponseResult<List<User>> query(@RequestParam(value = "page", defaultValue = "0") Integer page,
+	@GetMapping("/")
+	public ResponseResult<List<User>> queryUsers(@RequestParam(value = "page", defaultValue = "0") Integer page,
 			@RequestParam(value = "size", defaultValue = "0") Integer size) {
 		List<User> list = userS.queryUsers(page, size);
 		return new ResponseResult<List<User>>(ResponseResult.OK, list);
@@ -68,8 +70,8 @@ public class UserController {
 	 */
 	@ApiOperation(value = "创建新用户", notes = "用户名不可以重复")
 	@ApiImplicitParam(name = "user", value = "用户对象", dataTypeClass = User.class)
-	@PostMapping("/create")
-	public ResponseResult<User> create(User user) {
+	@PostMapping("/")
+	public ResponseResult<User> createUser(@RequestBody User user) {
 		User data = userS.createUser(user);
 		return new ResponseResult<User>(ResponseResult.OK, data);
 	}
@@ -82,8 +84,8 @@ public class UserController {
 	 */
 	@ApiOperation(value = "通过id删除用户")
 	@LogAop(name = "/aop/aop.action")
-	@DeleteMapping("/remove/{id}")
-	public ResponseResult<Void> remove(@PathVariable("id") Integer id) {
+	@DeleteMapping("/{id}")
+	public ResponseResult<Void> removeUser(@PathVariable("id") Integer id) {
 		userS.removeUser(id);
 		return new ResponseResult<Void>(ResponseResult.OK);
 	}
@@ -96,13 +98,15 @@ public class UserController {
 	 * @return User实体
 	 */
 	@ApiOperation("实现用户登录")
-	@PostMapping("/login")
-	public ResponseResult<User> login(String username, String password, HttpSession session) {
-		User user = userS.login(username, password);
-		session.setAttribute("id", user.getId());
-		session.setAttribute("username", user.getUsername());
-		session.setAttribute("permission", user.getPermission());
-		return new ResponseResult<User>(ResponseResult.OK, user);
+	@PostMapping("/action/login")
+	public ResponseResult<User> login(@RequestBody User user, HttpSession session) {
+		// TODO
+		System.err.println(user);
+		User userInfo = userS.login(user);
+		session.setAttribute("id", userInfo.getId());
+		session.setAttribute("username", userInfo.getUsername());
+		session.setAttribute("permission", userInfo.getPermission());
+		return new ResponseResult<User>(ResponseResult.OK, userInfo);
 	}
 
 	/**
@@ -115,7 +119,7 @@ public class UserController {
 	 */
 	@ApiOperation("通过用户名模糊查找用户信息")
 	@LogAop(name = "/aop/aop.action")
-	@GetMapping("/getlike")
+	@GetMapping("/getlike/{username}")
 	public ResponseResult<List<User>> queryByUsername(@RequestParam(value = "username") String username,
 			@RequestParam(value = "page", defaultValue = "0") Integer page,
 			@RequestParam(value = "size", defaultValue = "0") Integer size) {
@@ -132,9 +136,10 @@ public class UserController {
 	 */
 	@ApiOperation("修改用户信息")
 	@LogAop(name = "/aop/aop.action")
-	@PutMapping("/put_user/{id}")
-	public ResponseResult<User> modify(User user, HttpSession session, @PathVariable("id") Integer id) {
-		User data = userS.modifyUser(user, session, id);
+	@PutMapping("/{id}")
+	public ResponseResult<User> modifyUser(@RequestBody User user, HttpSession session) {
+		System.err.println("修改用户信息：" + user.getId());
+		User data = userS.modifyUser(user, session);
 		return new ResponseResult<User>(ResponseResult.OK, data);
 	}
 
@@ -148,10 +153,23 @@ public class UserController {
 	 */
 	@ApiOperation("修改用户密码")
 	@LogAop(name = "/aop/aop.action")
-	@PutMapping("/put_password/{id}")
-	public ResponseResult<User> modifyPassword(String oldpassword, String newpassword, @PathVariable("id") Integer id,
+	@PostMapping("/password")
+	public ResponseResult<User> modifyPassword(String oldpassword, String newpassword, Integer id,
 			HttpSession session) {
-		User data = userS.modifyPassword(newpassword, oldpassword, id);
+		User data = userS.modifyPassword(newpassword, oldpassword, id, session);
 		return new ResponseResult<User>(ResponseResult.OK, data);
+	}
+
+	/**
+	 * 通过用户名查找用户信息
+	 * 
+	 * @param username 用户名
+	 * @return 用户信息
+	 */
+	@ApiOperation("通过用户名查找用户信息")
+	@GetMapping("/username/{username}")
+	public ResponseResult<User> getUserByName(@PathVariable("username") String username) {
+		User user = userS.getUserByUserName(username);
+		return new ResponseResult<User>(ResponseResult.OK, user);
 	}
 }

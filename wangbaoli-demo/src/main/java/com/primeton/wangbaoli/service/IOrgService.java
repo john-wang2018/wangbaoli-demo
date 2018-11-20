@@ -29,7 +29,7 @@ public interface IOrgService {
 	 * @param org 组织机构对象
 	 * @return 修改后的组织机构对象
 	 */
-	Org modifyOrg(Org org,HttpSession session,Integer id);
+	Org modifyOrg(Org org,HttpSession session);
 	/**
 	 * 通过组织机构的id查找组织机构信息
 	 * @param id 组织机构id

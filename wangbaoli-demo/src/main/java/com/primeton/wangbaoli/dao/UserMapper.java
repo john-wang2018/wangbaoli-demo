@@ -32,14 +32,6 @@ public interface UserMapper {
 	@Select("select id,username,orgid from user where orgid=#{orgid}")
 	List<User> queryByOrgid(Integer orgid);
 
-	/**
-	 * 将同一个部门员工的orgid设为null;
-	 * 
-	 * @param id
-	 * @return
-	 */
-	@Update("update user set orgid=null where oigid=#{orgid}")
-	Integer updateOrgidNull(Integer id);
 
 	// TODO-用户添加
 	/**
@@ -91,7 +83,7 @@ public interface UserMapper {
 	 */
 	@Select("select id,username,orgid,password,uuid from user where id=#{id}")
 	@Results({
-			@Result(property = "org", column = "orgid", one = @One(select = "com.primeton.wangbaoli.dao.OrgMapper.get")) })
+			@Result(property = "org", column = "orgid", one = @One(select = "com.primeton.wangbaoli.dao.OrgMapper.getOrg")) })
 	User getUser(Integer id);
 
 	/**
@@ -102,7 +94,7 @@ public interface UserMapper {
 
 	@Select("select id,username,orgid from user ")
 	@Results({
-			@Result(property = "org", column = "orgid", one = @One(select = "com.primeton.wangbaoli.dao.OrgMapper.get")) })
+			@Result(property = "org", column = "orgid", one = @One(select = "com.primeton.wangbaoli.dao.OrgMapper.getOrg")) })
 	List<User> queryUsers();
 
 	/**
@@ -113,7 +105,7 @@ public interface UserMapper {
 	 */
 	@Select("select id,password,uuid,username,orgid from user where username=#{username}")
 	@Results({
-			@Result(property = "org", column = "orgid", one = @One(select = "com.primeton.wangbaoli.dao.OrgMapper.get")) })
+			@Result(property = "org", column = "orgid", one = @One(select = "com.primeton.wangbaoli.dao.OrgMapper.getOrg")) })
 	User getByName(String username);
 
 	/**
@@ -124,7 +116,7 @@ public interface UserMapper {
 	 */
 	@Select("select id,username,orgid from user where username like #{username}")
 	@Results({
-			@Result(property = "org", column = "orgid", one = @One(select = "com.primeton.wangbaoli.dao.OrgMapper.get")) })
+			@Result(property = "org", column = "orgid", one = @One(select = "com.primeton.wangbaoli.dao.OrgMapper.getOrg")) })
 	List<User> queryLikeName(String username);
 
 	/**

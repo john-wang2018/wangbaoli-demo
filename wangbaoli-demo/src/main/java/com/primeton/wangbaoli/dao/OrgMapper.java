@@ -22,8 +22,8 @@ public interface OrgMapper{
 	 * @param org 组织机构对象
 	 * @return 返回值为1表示创建成功，0表示创建失败。
 	 */
-	@Insert("Insert into  org(orgname,createuser,createdate,modifuser,modifdate,preorgid) values(#{orgname}"
-			+ ",#{createuser},#{createdate},#{modifuser},#{modifdate},#{preorgid})")
+	@Insert("Insert into  org(orgname,createuser,orgcode,createdate,modifuser,modifdate,preorgcode) values(#{orgname}"
+			+ ",#{createuser},#{orgcode},#{createdate},#{modifuser},#{modifdate},#{preorgcode})")
 	@Options(useGeneratedKeys=true,keyProperty="id",keyColumn="id")
 	Integer insertOrg(Org org);
 	/**
@@ -45,27 +45,27 @@ public interface OrgMapper{
 	 * @param id 部门id
 	 * @return 部门对象
 	 */
-	@Select("select id,orgname,preorgid from org where id=#{id}")
+	@Select("select id,orgname,preorgcode from org where id=#{id}")
 	Org getOrg(Integer id);
 	/**
 	 * 通过部门名称关键字进行模糊查找
 	 * @param orgname 部门名称
 	 * @return 部门对象列表
 	 */
-	@Select("select id,preorgid,orgname from org where orgname like #{orgname}")
+	@Select("select id,preorgcode,orgname from org where orgname like #{orgname}")
 	List<Org> queryByLikeName(String orgname);
 	/**
 	 * 通过组织机构名精确查找组织机构信息。
 	 * @param orgname 组织机构名
 	 * @return 组织机构对象
 	 */
-	@Select("select id,preorgid,orgname from org where orgname=#{orgname}")
+	@Select("select id,preorgcode,orgname from org where orgname=#{orgname}")
 	Org getByName(String orgname);
 	/**
 	 * 查询所有组织机构信息
 	 * @return 组织机构对象列表。
 	 */
-	@Select("select id,orgname,preorgid from org")
+	@Select("select id,orgname,preorgcode from org")
 	List<Org> queryOrgs();
 	
 	/**
@@ -78,8 +78,8 @@ public interface OrgMapper{
 					UPDATE("ORG");
 					if(org.getOrgname()!=null)
 						SET("orgname=#{orgname}");
-					if(org.getPreorgid()!=null)
-						SET("preorgid=#{preorgid}");
+					if(org.getPreorgcode()!=null)
+						SET("preorgcode=#{preorgcode}");
 					SET("modifuser=#{modifuser}","modifdate=#{modifdate}");
 					WHERE("ID=#{id}");
 				}
