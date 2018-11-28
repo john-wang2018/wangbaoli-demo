@@ -31,7 +31,7 @@ public interface UserMapper {
 	 * @param user 用户信息对象
 	 * @return 添加成功返回1，添加失败返回0；
 	 */
-	@Insert("INSERT INTO USER(USER_NAME,ORG_ID,PASSWORD,CREATE_USER,CREATE_TIME,SEED)"
+	@Insert("INSERT INTO WANGBL_USER(USER_NAME,ORG_ID,PASSWORD,CREATE_USER,CREATE_TIME,SEED)"
 			+ " values(#{userName},#{orgId},#{password},#{createUser},#{createTime},#{seed}) ")
 	@Options(useGeneratedKeys = true, keyColumn = "ID", keyProperty = "id")
 	Integer insertUser(User user);
@@ -42,7 +42,7 @@ public interface UserMapper {
 	 * @param id 用户id
 	 * @return 成功返回1，失败返回0
 	 */
-	@Delete("DELETE FROM USER WHERE ID=#{id}")
+	@Delete("DELETE FROM WANGBL_USER WHERE ID=#{id}")
 	Integer deleteUser(Integer id);
 
 	/**
@@ -61,7 +61,7 @@ public interface UserMapper {
 	 * @param password
 	 * @return 修改成功返回1，修改失败返回0；
 	 */
-	@Update("UPDATE  USER  SET PASSWORD=#{password} WHERE ID=#{id}")
+	@Update("UPDATE  WANGBL_USER  SET PASSWORD=#{password} WHERE ID=#{id}")
 	Integer updatePassword(@Param("id") Integer id, @Param("password") String password);
 
 	/**
@@ -70,7 +70,7 @@ public interface UserMapper {
 	 * @param id 用户id
 	 * @return 用户信息
 	 */
-	@Select("SELECT ID id,USER_NAME userName,ORG_ID orgId,PASSWORD password,SEED seed FROM USER WHERE ID=#{id}")
+	@Select("SELECT ID id,USER_NAME userName,ORG_ID orgId,PASSWORD password,SEED seed FROM WANGBL_USER WHERE ID=#{id}")
 	@Results({
 			@Result(property = "org", column = "orgId", one = @One(select = "com.primeton.wangbaoli.demo.dao.OrgMapper.getOrg")) })
 	User getUser(Integer id);
@@ -81,7 +81,7 @@ public interface UserMapper {
 	 * @return
 	 */
 
-	@Select("SELECT ID id,USER_NAME userName,ORG_ID orgId FROM USER ")
+	@Select("SELECT ID id,USER_NAME userName,ORG_ID orgId FROM WANGBL_USER ")
 	@Results({
 			@Result(property = "org", column = "orgId", one = @One(select = "com.primeton.wangbaoli.demo.dao.OrgMapper.getOrg")) })
 	List<User> queryUsers();
@@ -93,7 +93,7 @@ public interface UserMapper {
 	 * @param username 用户名
 	 * @return 用户信息列表
 	 */
-	@Select("SELECT ID id,PASSWORD password,SEED seed,USER_NAME userName,ORG_ID orgId FROM USER WHERE USER_NAME=#{userName}")
+	@Select("SELECT ID id,PASSWORD password,SEED seed,USER_NAME userName,ORG_ID orgId FROM WANGBL_USER WHERE USER_NAME=#{userName}")
 	@Results({
 			@Result(property = "org", column = "orgId", one = @One(select = "com.primeton.wangbaoli.demo.dao.OrgMapper.getOrg")) })
 	User getUserByUserName(String userName);
@@ -104,7 +104,7 @@ public interface UserMapper {
 	 * @param username 用户名
 	 * @return 用户信息列表
 	 */
-	@Select("<script>SELECT ID id,USER_NAME userName,ORG_ID orgId FROM USER <if test=\"userName !='' \"> WHERE USER_NAME like #{userName}</if></script>")
+	@Select("<script>SELECT ID id,USER_NAME userName,ORG_ID orgId FROM WANGBL_USER <if test=\"userName !='' \"> WHERE USER_NAME like #{userName}</if></script>")
 	@Results({
 			@Result(property = "org", column = "orgId", one = @One(select = "com.primeton.wangbaoli.demo.dao.OrgMapper.getOrg")) })
 	List<User> queryUsersByKeyWord(User user);
@@ -114,7 +114,7 @@ public interface UserMapper {
 	 * @param orgid 组织机构id
 	 * @return 用户信息列表
 	 */
-	@Select("SELECT ID id,USER_NAME userName,ORG_ID orgId FROM USER WHERE ORG_ID=#{orgId}")
+	@Select("SELECT ID id,USER_NAME userName,ORG_ID orgId FROM WANGBL_USER WHERE ORG_ID=#{orgId}")
 	@Results({
 		@Result(property = "org", column = "orgId", one = @One(select = "com.primeton.wangbaoli.demo.dao.OrgMapper.getOrg")) })
 	List<User> queryUsersByOrgId(Integer orgId);
@@ -128,7 +128,7 @@ public interface UserMapper {
 		public String update(User user) {
 			return new SQL() {
 				{
-					UPDATE("USER");
+					UPDATE("WANGBL_USER");
 					if (user.getOrgId() != null)
 						SET("ORG_ID=#{orgId}");
 					if (user.getUserName() != null)
