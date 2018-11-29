@@ -134,7 +134,7 @@ public class UserController {
 	 * @throws DemoException
 	 */
 	@ApiOperation("通过用户名模糊查找用户信息")
-	@GetMapping("/actions/query/user/name")
+	@GetMapping("/actions/query/users/name")
 	public ResponseResult<PageInfo<User>> queryUsersByUsername(@RequestParam(value = "username",defaultValue="") String username,
 			@RequestParam(value = "page", defaultValue = "0") Integer page,
 			@RequestParam(value = "size", defaultValue = "0") Integer size) throws DemoException {
